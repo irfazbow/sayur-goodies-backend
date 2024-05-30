@@ -5,6 +5,7 @@ import com.irfazbow.sayurGoodiesBackend.products.service.ProductService;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,28 +70,24 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getAllAndSearchProducts() {
-        return new ArrayList<>(products);
+    public List<Product> getAllAndSearchProducts(String name, String category) {
+        return products.stream()
+                .filter(product -> StringUtils.isEmpty(name) || product.getName().equalsIgnoreCase(name))
+                .filter(product -> StringUtils.isEmpty(category) || product.getCategory().equalsIgnoreCase(category))
+                .toList();
     }
 
     @Override
-    public Product updateProduct(Product updatedProduct) {
-        Product currentProduct = products.stream()
-                .filter(product -> Objects.equals(product.getId(), updatedProduct.getId()))
-                .findFirst()
-                .orElse(null);
-
-        if (currentProduct != null) {
-            currentProduct.setName(updatedProduct.getName());
-            currentProduct.setCategory(updatedProduct.getCategory());
-            currentProduct.setPrice(updatedProduct.getPrice());
-            currentProduct.setWeight(updatedProduct.getWeight());
-            currentProduct.setImageUrl(updatedProduct.getImageUrl());
-            currentProduct.setMetadata(updatedProduct.getMetadata());
-        }
-
-        return currentProduct;
-
+    public Optional<Product> updateProduct(Long id, Product updatedProduct) {
+        return getProductById(id).map(existingProduct -> {
+            if (updatedProduct.getPrice() != null) existingProduct.setPrice(updatedProduct.getPrice());
+            if (updatedProduct.getWeight() != null) existingProduct.setWeight(updatedProduct.getWeight());
+            if (updatedProduct.getName() != null) existingProduct.setName(updatedProduct.getName());
+            if (updatedProduct.getCategory() != null) existingProduct.setCategory(updatedProduct.getCategory());
+            if (updatedProduct.getImageUrl() != null) existingProduct.setImageUrl(updatedProduct.getImageUrl());
+            if (updatedProduct.getMetadata() != null) existingProduct.setMetadata(updatedProduct.getMetadata());
+            return existingProduct;
+        });
     }
     public void deleteProductById(Long id) {
         products.removeIf(product -> product.getId().equals(id));

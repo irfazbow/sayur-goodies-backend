@@ -11,11 +11,10 @@ import org.springframework.http.ResponseEntity;
 @ToString
 public class Response<T> {
 
-    private T data;
     private int statusCode;
     private String message;
     boolean isSuccess = false;
-
+    private T data;
 
     public Response(int statCode, String statusDesc) {
         statusCode = statCode;

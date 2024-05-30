@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,13 +42,18 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<Response<List<Product>>> getAllAndSearchProducts() {
-        return Response.successfulResponse("All products fetched", productService.getAllAndSearchProducts());
+    public ResponseEntity<Response<List<Product>>> getAllAndSearchProducts(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String category) {
+        List<Product> products = productService.getAllAndSearchProducts(name, category);
+        return Response.successfulResponse("All products fetched", products);
     }
 
-    @PutMapping
-    public ResponseEntity<Response<Product>> updateProduct(@Valid @RequestBody Product product) {
-        return Response.successfulResponse("Product has been updated", productService.updateProduct(product));
+    @PutMapping("/{id}")
+    public ResponseEntity<Response<Product>> updateProduct(@PathVariable Long id, @RequestBody Product product) {
+        Optional<Product> updatedProduct = productService.updateProduct(id, product);
+        return updatedProduct.map(value -> Response.successfulResponse("Product has been updated", value)).orElseGet(()
+                -> Response.failedResponse(HttpStatus.NOT_FOUND.value(), "Product ID not found", null));
     }
 
     @DeleteMapping("/{id}")
