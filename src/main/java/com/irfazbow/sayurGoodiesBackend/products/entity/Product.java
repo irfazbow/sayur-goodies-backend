@@ -11,7 +11,8 @@ import lombok.*;
 @Setter
 @Getter
 public class Product {
-    private String id;
+
+    private Long id;
     @NotNull
     @Min(value = 0, message = "Price must be non-negative")
     private double price;
@@ -28,6 +29,11 @@ public class Product {
     @NotNull(message = "Metadata is required")
     private Metadata metadata;
 
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
     public static class Metadata {
         @NotBlank(message = "Unit is required")
         private String unit;
