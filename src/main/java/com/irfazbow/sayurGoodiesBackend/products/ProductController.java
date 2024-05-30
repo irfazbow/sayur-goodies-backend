@@ -62,6 +62,6 @@ public class ProductController {
             return Response.failedResponse(HttpStatus.NOT_FOUND.value(), "Product not found", null);
         }
         productService.deleteProductById(id);
-        return Response.successfulResponse(HttpStatus.NO_CONTENT.value(), "Product deleted successfully", null);
+        return Response.successfulResponse("Product deleted successfully", null);
     }
 }

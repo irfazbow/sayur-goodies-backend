@@ -9,9 +9,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Log
@@ -38,19 +36,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private Long generateNewId() {
-        List<Long> sortedIds = products.stream()
-                .map(Product::getId)
-                .sorted()
-                .toList();
-
-        long newId = 0;
-        for (Long id : sortedIds) {
-            if (!id.equals(newId)) {
-                break;
-            }
-            newId++;
-        }
-        return newId;
+        return products.stream()
+                .mapToLong(Product::getId)
+                .max()
+                .orElse(0L) + 1;
     }
 
     @Override
@@ -72,8 +61,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> getAllAndSearchProducts(String name, String category) {
         return products.stream()
-                .filter(product -> StringUtils.isEmpty(name) || product.getName().equalsIgnoreCase(name))
-                .filter(product -> StringUtils.isEmpty(category) || product.getCategory().equalsIgnoreCase(category))
+                .filter(product -> !StringUtils.hasLength(name) || product.getName().equalsIgnoreCase(name))
+                .filter(product -> !StringUtils.hasLength(category) || product.getCategory().equalsIgnoreCase(category))
                 .toList();
     }
 
