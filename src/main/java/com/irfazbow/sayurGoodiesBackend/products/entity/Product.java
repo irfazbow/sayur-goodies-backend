@@ -15,10 +15,10 @@ public class Product {
     private Long id;
     @NotNull
     @Min(value = 0, message = "Price must be non-negative")
-    private double price;
+    private Double price;
     @NotNull
     @Min(value = 0, message = "Weight must be non-negative")
-    private int weight;
+    private Integer weight;
     @NotNull
     @NotBlank(message = "Product name is required")
     private String name;
@@ -55,6 +55,5 @@ public class Product {
 
         @Min(value = 0, message = "Carbs must be non-negative")
         private int carbs;
-
     }
 }
